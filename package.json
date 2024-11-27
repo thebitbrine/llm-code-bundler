@@ -1,0 +1,59 @@
+{
+    "name": "llm-code-bundler",
+    "displayName": "LLM Code Bundler",
+    "description": "Bundle code files into markdown for LLM analysis",
+    "version": "0.1.0",
+    "publisher": "TheBitBrine",
+    "author": {
+        "name": "TheBitBrine"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/thebitbrine/llm-code-bundler"
+    },
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": ["Other"],
+    "activationEvents": ["onCommand:llm-code-bundler.bundle"],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [{
+            "command": "llm-code-bundler.bundle",
+            "title": "LLM: Bundle Code to Markdown"
+        }],
+        "configuration": {
+            "title": "LLM Code Bundler",
+            "properties": {
+                "llm-code-bundler.maxFileSize": {
+                    "type": "number",
+                    "default": 100,
+                    "description": "Maximum file size in KB"
+                },
+                "llm-code-bundler.excludePatterns": {
+                    "type": "array",
+                    "default": [
+                        "node_modules",
+                        "dist",
+                        "build",
+                        ".git",
+                        "*.min.*",
+                        "*.bundle.*"
+                    ],
+                    "description": "Patterns to exclude from bundling"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/vscode": "^1.80.0",
+        "@types/node": "^20.8.0",
+        "typescript": "^5.2.2"
+    }
+}
