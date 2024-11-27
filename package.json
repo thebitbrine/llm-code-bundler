@@ -2,8 +2,9 @@
     "name": "llm-code-bundler",
     "displayName": "LLM Code Bundler",
     "description": "Bundle code files into markdown for LLM analysis",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "publisher": "TheBitBrine",
+    "icon": "images/logo.png", 
     "author": {
         "name": "TheBitBrine"
     },
