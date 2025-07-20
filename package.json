@@ -1,60 +1,135 @@
 {
-    "name": "llm-code-bundler",
-    "displayName": "LLM Code Bundler",
-    "description": "Bundle code files into markdown for LLM analysis",
-    "version": "0.1.1",
-    "publisher": "TheBitBrine",
-    "icon": "images/logo.png", 
-    "author": {
-        "name": "TheBitBrine"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/thebitbrine/llm-code-bundler"
-    },
-    "engines": {
-        "vscode": "^1.80.0"
-    },
-    "categories": ["Other"],
-    "activationEvents": ["onCommand:llm-code-bundler.bundle"],
-    "main": "./out/extension.js",
-    "contributes": {
-        "commands": [{
-            "command": "llm-code-bundler.bundle",
-            "title": "LLM: Bundle Code to Markdown"
-        }],
-        "configuration": {
-            "title": "LLM Code Bundler",
-            "properties": {
-                "llm-code-bundler.maxFileSize": {
-                    "type": "number",
-                    "default": 100,
-                    "description": "Maximum file size in KB"
-                },
-                "llm-code-bundler.excludePatterns": {
-                    "type": "array",
-                    "default": [
-                        "node_modules",
-                        "dist",
-                        "build",
-                        ".git",
-                        "*.min.*",
-                        "*.bundle.*"
-                    ],
-                    "description": "Patterns to exclude from bundling"
-                }
-            }
+  "name": "llm-code-bundler",
+  "displayName": "LLM Code Bundler",
+  "description": "Bundle code files into markdown for LLM analysis with tree generation and selective bundling",
+  "version": "0.2.0",
+  "publisher": "TheBitBrine",
+  "icon": "images/logo.png",
+  "author": {
+    "name": "TheBitBrine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thebitbrine/llm-code-bundler"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:llm-code-bundler.bundle",
+    "onCommand:llm-code-bundler.generateTree"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "llm-code-bundler.bundle",
+        "title": "LLM: Bundle Code to Markdown"
+      },
+      {
+        "command": "llm-code-bundler.generateTree",
+        "title": "LLM: Generate Project Tree"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "llm-code-bundler.webview",
+          "name": "LLM Code Bundler",
+          "when": "workspaceFolderCount > 0"
         }
+      ]
     },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./"
+    "configuration": {
+      "title": "LLM Code Bundler",
+      "properties": {
+        "llm-code-bundler.maxFileSize": {
+          "type": "number",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 10000,
+          "description": "Maximum file size in KB to include in bundle"
+        },
+        "llm-code-bundler.excludePatterns": {
+          "type": "array",
+          "default": [
+            "node_modules/**",
+            ".git/**",
+            "dist/**",
+            "build/**",
+            "*.min.*",
+            "*.bundle.*",
+            "*.log",
+            "*.lock",
+            ".env*"
+          ],
+          "description": "Patterns to exclude from bundling (supports wildcards)"
+        },
+        "llm-code-bundler.includeHiddenFiles": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include hidden files and folders (starting with '.')"
+        },
+        "llm-code-bundler.maxDepth": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "maximum": 50,
+          "description": "Maximum directory depth for tree generation"
+        },
+        "llm-code-bundler.outputLocation": {
+          "type": "string",
+          "default": "workspace",
+          "enum": [
+            "workspace",
+            "desktop"
+          ],
+          "enumDescriptions": [
+            "Save files to workspace root",
+            "Save files to desktop"
+          ],
+          "description": "Where to save generated bundle files"
+        }
+      }
     },
-    "license": "MIT",
-    "devDependencies": {
-        "@types/vscode": "^1.80.0",
-        "@types/node": "^20.8.0",
-        "typescript": "^5.2.2"
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "llm-code-bundler.generateTree",
+          "when": "explorerResourceIsFolder",
+          "group": "llm-bundler"
+        },
+        {
+          "command": "llm-code-bundler.bundle",
+          "when": "explorerResourceIsFolder",
+          "group": "llm-bundler"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "llm-code-bundler.bundle",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "llm-code-bundler.generateTree",
+          "when": "workspaceFolderCount > 0"
+        }
+      ]
     }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "^20.8.0",
+    "typescript": "^5.2.2"
+  }
 }
